@@ -10,18 +10,20 @@ import UIKit
 
 struct SwipeTrackingViewRepresentable: UIViewRepresentable {
     
-    @Binding var isTracking: Bool
+    @Binding var state: ContentView.TrackingState
     let view = SwipeTrackingView()
     func makeUIView(context: Context) -> SwipeTrackingView {
         return view
     }
     
     func updateUIView(_ uiView: SwipeTrackingView, context: Context) {
-        if isTracking{
+        switch state{
+        case .tracking:
             uiView.startTracking()
-        }
-        else{
+        case .finished:
             uiView.endTracking()
+        case .idle:
+            break
         }
     }
 }
