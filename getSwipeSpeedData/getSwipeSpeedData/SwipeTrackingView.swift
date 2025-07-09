@@ -72,6 +72,14 @@ class SwipeTrackingView: UIView {
         previousTimestamp = currentTime
     }
 
+    //측정 시작 함수
+    func startTracking(){
+        pathPoints.removeAll()
+        velocities.removeAll()
+        previousTouchPoint = nil
+        previousTimestamp = nil
+        print("---- 5초간 속도 측정 시작 ----")
+    }
     //외부 호출 함수 -> 측정을 종료하고 결과 출력
     func endTracking() {
         print("---- 5초간 측정 종료 ----")

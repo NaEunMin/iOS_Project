@@ -6,20 +6,22 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct SwipeTrackingViewRepresentable: UIViewRepresentable {
     
+    @Binding var isTracking: Bool
+    let view = SwipeTrackingView()
     func makeUIView(context: Context) -> SwipeTrackingView {
-        let view = SwipeTrackingView()
-        
-        //5초 후 측정 종료
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5){
-            view.endTracking()
-        }
         return view
     }
     
     func updateUIView(_ uiView: SwipeTrackingView, context: Context) {
-        //업데이트 필요 없음
+        if isTracking{
+            uiView.startTracking()
+        }
+        else{
+            uiView.endTracking()
+        }
     }
 }
