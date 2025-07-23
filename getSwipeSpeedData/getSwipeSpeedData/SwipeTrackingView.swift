@@ -20,7 +20,7 @@ class SwipeTrackingView: UIView {
     private var pathPoints: [CGPoint] = []
     
     //스와이프 속도를 저장하는 배열 (단위 : pt/sec)
-    private var velocities: [CGFloat] = []
+    private var velocities: [CGVector] = []
     
     //측정 활성화 상태 변수
     private var isTrackingEnabled = false
@@ -64,7 +64,9 @@ class SwipeTrackingView: UIView {
             
             //시간 차가 0보다 크다면 속도를 계산한다.
             if dt > 0 {
-                let velocity = distance / CGFloat(dt)
+                let vx = dx / CGFloat(dt)
+                let vy = dy / CGFloat(dt)
+                let velocity = CGVector(dx: vx, dy: vy)
                 velocities.append(velocity)
                 
                 //속도 및 현재 위치 콘솔 출력용
@@ -103,8 +105,9 @@ class SwipeTrackingView: UIView {
         
         //평균 속도 출력
         if !velocities.isEmpty {
-            let average = velocities.reduce(0, +) / CGFloat(velocities.count)
-            print("평균 속도 :\(average) pt/s")
+            let totalVelocity = velocities.reduce(CGVector.zero) { CGVector(dx: $0.dx + $1.dx, dy: $0.dy + $1.dy) }
+            let averageVelocity = CGVector(dx: totalVelocity.dx / CGFloat(velocities.count), dy: totalVelocity.dy / CGFloat(velocities.count))
+            print("평균 속도 :\(averageVelocity) pt/s")
         }
     }
 }
