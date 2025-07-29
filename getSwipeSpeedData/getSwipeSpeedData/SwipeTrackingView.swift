@@ -57,7 +57,6 @@ class SwipeTrackingView: UIView {
             //두 좌표간 거리 계산 -> 피타고라스 사용
             let dx = currentPoint.x - prevPoint.x
             let dy = currentPoint.y - prevPoint.y
-            let distance = sqrt(dx * dx + dy * dy)
             
             //시간 간격 계산
             let dt = currentTime - prevTime
@@ -92,6 +91,9 @@ class SwipeTrackingView: UIView {
     }
     //외부 호출 함수 -> 측정을 종료하고 결과 출력
     func endTracking() {
+        //velocities -> 속도 벡터 배열(각 순간의 속도 벡터(x,y))
+        //pt/s -> 픽셀 단위로 측정된 속도 (1초에 몇 포인트만큼 이동했는지 나타내는 단위)
+        
         
         //측정 비활성화
         isTrackingEnabled = false
@@ -109,6 +111,22 @@ class SwipeTrackingView: UIView {
             let averageVelocity = CGVector(dx: totalVelocity.dx / CGFloat(velocities.count), dy: totalVelocity.dy / CGFloat(velocities.count))
             print("평균 속도 :\(averageVelocity) pt/s")
         }
+
+        //속도의 크기인 속력 출력
+        if !velocities.isEmpty {
+            let totalSpeed = velocities.reduce(0) { $0 + sqrt($1.dx * $1.dx + $1.dy * $1.dy) }
+            let averageSpeed = totalSpeed / CGFloat(velocities.count)
+            print("평균 속력 : \(averageSpeed) pt/s")
+        }
+
+        //터치가 실제로 발생하지 않았거나
+        //터치가 너무 짧거나, 너무 빠르면 endTracking() 함수가 정상작동하지 않을 수 있다.
+
+        //속도를 측정할 때 음수가 나오는 경우는 속도는 방향을 가지는 물리량이기 때문이다.
+        //x축 속도가 음수인 경우 -> 왼쪽으로 움직이는 것 (currentPoint.x < previousPoint.x) 즉 vx가 음수가 된다.
+        //y축 속도가 음수인 경우 -> 위쪽으로 움직이는 것 (currentPoint.y < previousPoint.y) 즉 vy가 음수가 된다.
+        //UIKit 좌표계에서 y축은 아래로 갈수록 값이 커진다.
+        //평균속도 또한 마찬가지라고 한다.
     }
 }
 
